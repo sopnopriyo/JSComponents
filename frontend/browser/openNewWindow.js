@@ -2,8 +2,7 @@
  * Attempts to open a new browser window to the URL
  * In most cases this will result to a new tab (browser settings dependent).
  * 
- * While this function attempts to bypass 
- * Note that due to popup blockers, etc. This is not 100% reliable.
+ * While this function attempts does work around some common pop blocking techniques. This is not 100% reliable.
  * As such do not perform critical redirection here, in which the user cannot easily "redo"
  * 
  * See: https://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-and-not-a-new-window-using-javascript
