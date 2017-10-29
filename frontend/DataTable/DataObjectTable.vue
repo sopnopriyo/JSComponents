@@ -52,7 +52,7 @@ export default {
 		},
 
 		// Default OID collumn label, if blank it will be hidden
-		oidCollumn : {
+		oidLabel : {
 			default: ""
 		},
 
@@ -145,7 +145,7 @@ export default {
 
 		// Full header names as an array : including the starting _oid
 		headerNamesArray_full() {
-			return ["Object ID"].concat( this.headerNamesArray );
+			return [this.oidLabel || "Object ID"].concat( this.headerNamesArray );
 		},
 
 		// Full filed names as an array : including the starting _oid
@@ -208,6 +208,28 @@ export default {
 		// DataTable.js integration
 		//--------------------------------------------------------------------
 
+		// Collumns visibility rulling array
+		columnsRules() {
+			let col = [];
+			let headerNamesArray_full = this.headerNamesArray_full;
+			
+			// Prepare a blank "col" list
+			for(let i=0; i<headerNamesArray_full.length; ++i) {
+				col[i] = null;
+			}
+
+			// Special rule for _oid collumn label
+			if( this.oidLabel && this.oidLabel.length > 0 ) {
+				// does nothing, use it as per normal
+			} else {
+				// hides it
+				col[0] = {visible:false};
+			}
+
+			// Return the columns rules
+			return col;
+		},
+
 		/**
 		 * The full final datatable config : Used by reloadDisplay
 		 */
@@ -219,6 +241,7 @@ export default {
 			var config = {
 				processing: true,
 				serverSide: true,
+				columns: self.columnsRules,
 				ajax:{
 					url: self.fullApiUrl,
 					type: "POST",
