@@ -85,16 +85,16 @@ function apiCacheRaw(endpointPath, argsArray) {
 
 /**
  * Clears the various cache for an endpointPath, this is useful on mounted,
- * As it will ensure certain data (such as table list) 
+ * As it will ensure certain data (such as table list) is updated properly.
  */
-function apiCacheClear(endpoint) {
+function apiCacheClear(endpointPath) {
 	// Check request cache, and clear it
-	if( requestCache[endpointPath] && requestCache[endpointPath][argStr] ) {
-		requestCache[endpointPath][argStr] = null;
+	if( requestCache[endpointPath] ) {
+		requestCache[endpointPath] = null;
 	}
 	// Check result cache, use it if so
-	if( resultCache[endpointPath] && resultCache[endpointPath][argStr] ) {
-		resultCache[endpointPath][argStr] = null;
+	if( resultCache[endpointPath] ) {
+		resultCache[endpointPath] = null;
 	}
 
 }
