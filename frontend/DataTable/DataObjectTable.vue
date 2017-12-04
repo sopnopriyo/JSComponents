@@ -251,6 +251,13 @@ export default {
 					xhrFields: {
 						withCredentials: true
 					}
+				},
+				// Default to first collumn ordering
+				order: [[ 1, 'asc' ]],
+				// Text language overwrites
+				language: {
+					//" - filtered from _MAX_ records"
+					infoFiltered : ""
 				}
 			};
 
@@ -337,8 +344,6 @@ export default {
 
 				// Load up datatable
 				let table = root.find("table");
-
-				console.log(self.datatableJSConfig);
 				self.dataTableObject = table.DataTable(self.datatableJSConfig);
 			});
 		}
