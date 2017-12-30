@@ -63,6 +63,10 @@ function apiCacheRaw(endpointPath, argsArray) {
 	// Processor to cache the result if needed
 	//-------------------------------------------
 	res.then(function(good) {
+		// Ensure the request cache has a "save point"
+		if( requestCache[endpointPath] == null ) {
+			requestCache[endpointPath] = {};
+		}
 		// Clear the request cache
 		requestCache[endpointPath][argStr] = null;
 		// Check for RESULT
