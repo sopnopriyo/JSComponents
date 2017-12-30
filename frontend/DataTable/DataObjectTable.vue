@@ -230,6 +230,11 @@ export default {
 			return col;
 		},
 
+		// Defines custom behaviour for each column
+		aoColumnDefs(){
+			return [];
+		},
+
 		/**
 		 * The full final datatable config : Used by reloadDisplay
 		 */
@@ -242,6 +247,7 @@ export default {
 				processing: true,
 				serverSide: true,
 				columns: self.columnsRules,
+				aoColumnDefs: self.aoColumnDefs,
 				ajax:{
 					url: self.fullApiUrl,
 					type: "POST",
