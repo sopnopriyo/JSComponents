@@ -231,7 +231,7 @@ export default {
 		},
 
 		// Defines custom behaviour for each column
-		aoColumnDefs(){
+		columnDefs(){
 			return [];
 		},
 
@@ -247,7 +247,7 @@ export default {
 				processing: true,
 				serverSide: true,
 				columns: self.columnsRules,
-				aoColumnDefs: self.aoColumnDefs,
+				columnDefs: self.columnDefs,
 				ajax:{
 					url: self.fullApiUrl,
 					type: "POST",
