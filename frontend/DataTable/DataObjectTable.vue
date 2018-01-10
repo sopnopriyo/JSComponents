@@ -1,6 +1,6 @@
 <template>
 	<div class="dataobject-table-wrapper" v-once>
-		<!-- 
+		<!--
 		- The above v-once, ensures that vue does NOT handle the handling of html underneath.
 		- Which is critical for this component.
 		-
@@ -39,7 +39,7 @@ export default {
 		// Table formatting
 		//--------------------------------------------------------------------
 
-		// Header display setting, 
+		// Header display setting,
 		// expect either an array or a json string
 		headerNames: {
 			default: '["Name"]'
@@ -77,7 +77,24 @@ export default {
 		queryArgs : {
 			default: '[]'
 		},
-		
+
+		// Result ordering format
+		ordering : {
+			type: Array,
+			default: function() { return [[ 1, "asc"]]; }
+		},
+
+		// Configuration for datatableJSConfig
+		configObj : {
+			type: Object,
+			default: function() { return {}; }
+		},
+
+		// Configure how new pages are opened when row was clicked
+		openPageInNewTab : {
+			default: false
+		},
+
 		//--------------------------------------------------------------------
 		// API linkage handling
 		//--------------------------------------------------------------------
@@ -86,7 +103,7 @@ export default {
 		// This assumes a JavaCommons api.js object is loaded in global
 		//
 		// Note that this will automatically be converted to the api URL
-		// As this module actually bypasses the API object functions, and 
+		// As this module actually bypasses the API object functions, and
 		// its own http requests directly
 		apiNamespace: {
 			default: "account.info.list.datatables",
@@ -106,7 +123,7 @@ export default {
 			type: String,
 		}
 	},
-	
+
 	//--------------------------------------
 	// Computed Properties
 	//--------------------------------------
@@ -120,15 +137,15 @@ export default {
 		headerNamesArray() {
 			if( Array.isArray(this.headerNames) ) {
 				return this.headerNames;
-			} 
+			}
 			return JSON.parse(this.headerNames);
 		},
-		
+
 		// HeaderNames as an array
 		fieldNamesArray() {
 			if( Array.isArray(this.fieldNames) ) {
 				return this.fieldNames;
-			} 
+			}
 			return JSON.parse(this.fieldNames);
 		},
 
@@ -136,7 +153,7 @@ export default {
 		queryArgsArray() {
 			if( Array.isArray(this.queryArgs) ) {
 				return this.queryArgs;
-			} 
+			}
 			if( this.queryArgs == '[null]' ) {
 				return [null];
 			}
@@ -197,7 +214,7 @@ export default {
 
 			// Start / End : Table body content
 			html.push( '<tbody></tbody>' );
-			
+
 			// End : table tag
 			html.push( '</table>' );
 
@@ -212,7 +229,7 @@ export default {
 		columnsRules() {
 			let col = [];
 			let headerNamesArray_full = this.headerNamesArray_full;
-			
+
 			// Prepare a blank "col" list
 			for(let i=0; i<headerNamesArray_full.length; ++i) {
 				col[i] = null;
@@ -259,7 +276,7 @@ export default {
 					}
 				},
 				// Default to first collumn ordering
-				order: [[ 1, 'asc' ]],
+				order: self.ordering,
 				// Text language overwrites
 				language: {
 					//" - filtered from _MAX_ records"
@@ -275,21 +292,43 @@ export default {
 
 			// Handling of on-click
 			if( self.objectPageName && self.objectPageName.length > 0 ) {
+
 				config.createdRow = function(row, data, index) {
 					$(row).click(function() {
-
 						if( self.objectPageName && self.objectPageName.length > 0 ) {
-							self.$router.push({
-								name : self.objectPageName,
-								query : {
-									_oid : data[0]
-								}
-							});
+							if( self.openPageInNewTab ) {
+								window.open( self.objectPageName + "?_oid="+data[0], '_blank' );
+							} else {
+								self.$router.push({
+									name : self.objectPageName,
+									query : {
+										_oid : data[0]
+									}
+								});
+							}
 						}
 
 					}).css({cursor: "pointer"});
+
+					// This is for middle/right click to new page
+					// While left click for redirect
+					// $(row).mousedown(function(e) {
+					// 	console.log("click", e.which);
+					// 	if(e.which == 2 || e.which == 3) {
+					// 		// Open with new tab
+					// 		window.open("../edit/?_oid="+data[0],'_blank');
+					// 	} else {
+					// 		// Direct click, redirect
+					// 		window.location.href = "../edit/?_oid="+data[0];
+					// 	}
+					// });
 				}
+
 			}
+
+			/// Note that if you overwrite the following in the config
+			/// columns, columnDefs, ajax, order their respective properties will not work
+			config = Object.assign(config, this.configObj);
 
 			return config;
 		},
@@ -340,7 +379,7 @@ export default {
 
 			// Ensure reload ONLY occurs after body load
 			$(document).ready(function() {
-				
+
 				// Get and reset root
 				let root = self.rootJQDom;
 				root.html("");
