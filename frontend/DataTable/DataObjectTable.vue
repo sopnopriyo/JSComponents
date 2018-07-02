@@ -269,7 +269,8 @@ export default {
 					url: self.fullApiUrl,
 					type: "POST",
 					data: {
-						fieldList: JSON.stringify(self.fieldNamesArray_full)
+						fieldList: JSON.stringify(self.fieldNamesArray_full),
+						searchMode: "both"
 					},
 					xhrFields: {
 						withCredentials: true
